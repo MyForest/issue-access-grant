@@ -1,0 +1,26 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/solid/oidc-context.jsonld"
+  ],
+  "client_id": "https://myforest.com/issue-access-grant/client-identifier.json",
+  "client_name": "Issue Access Grant",
+  "client_uri": "https://myforest.com/issue-access-grant/",
+  "redirect_uris": [
+    "https://myforest.com/issue-access-grant/"
+  ],
+  "grant_types": [
+    "authorization_code",
+    "refresh_token"
+  ],
+  "scope": "openid webid offline_access",
+  "token_endpoint_auth_method": "none",
+  "logo_uri": "https://myforest.com/issue-access-grant/logo",
+  "tos_uri": "https://myforest.com/issue-access-grant/tos",
+  "policy_uri": "https://myforest.com/issue-access-grant/policy",
+  "contacts": [
+    "david@myforest.com",
+    "https://id.inrupt.com/myforest"
+  ],
+  "application_type": "web",
+  "require_auth_time": false
+}

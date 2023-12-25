@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Issue Access Grant</title>
+  <link rel="icon" href="logo.png" type="image/x-png" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sortable/0.8.0/js/sortable.min.js"
+    integrity="sha512-DEcSaL0BWApJ//v7ZfqAI04nvK+NQcUVwrrx/l1x7OJgU0Cwbq7e459NBMzLPrm8eLPzAwBtiJJS4AvLZDZ8xA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+  <header>
+    <h1><img style="height: 1em" alt="logo" src="logo.png" /> Issue Access Grant</h1>
+  </header>
+  <section id="introduction">
+    <h2>Introduction</h2>
+    <p>You can give people access to your Solid Resources.</p>
+    <p>An Access Grant gives people permission to read, write or append to a single Resource or a lot of them.</p>
+    <p>Once you have logged in you will be able to issue an Access Grant.</p>
+  </section>
+
+  <section id="login">
+    <h2>Login</h2>
+    <p>Login so this tool can act on your behalf.</p>
+    <div>
+      <details>
+        <summary><label id="labelIdP" for="input-idp">Identity Provider:</label></summary>
+        Ideally you should know how you prefer to login to Solid. If not then simply leave this default.
+      </details>
+      <input type="text" id="input-idp" size="80" value="https://login.inrupt.com"></input>
+      <button name="btnLogin" id="btnLogin">Login</button>
+    </div>
+    <div>
+      <details>
+        <summary>
+          <label id="readlabel" for="myWebID">Your WebID:</label>
+          <label id="myWebID" name="myWebID">Login to see your WebID</label>
+        </summary>
+        Your <a target="_blank" rel="noopener noreferrer" href="https://www.w3.org/wiki/WebID">WebID</a> is used in
+        Solid to identify who you are. You can have
+        many WebIDs for different purposes so you will want to be sure this is showing the WebID that you mean to use.
+      </details>
+    </div>
+  </section>
+
+  <section id="access-grant-details">
+    <h2>Access Grant Details</h2>
+    <p>Describe things that are important to you, such as what you are giving access to and who will have access.</p>
+
+    <details>
+      <summary>
+        <label for="input-requestor-webid" id="requestor-webid">To: </label>
+      </summary>
+      <p>Grant access to the agent with this WebID. It might represent a person or a bot.</p>
+    </details>
+    <input type="text" id="input-requestor-webid" name="input-requestor-webid" size="100"
+      value="https://id.inrupt.com/davidbowen">
+      <br>
+    <label id="to-description"></label>
+
+
+    <details>
+      <summary><label id="resource" for="input-resource">For:</label></summary>
+      <p>This is the Resource URI you are giving access to.</p>
+      <p>You can use a Resource or a Container.</p>
+    </details>
+    <input type="text" id="input-resource" name="input-resource" size="100"
+      value="https://storage.inrupt.com/459bac9d-ecc7-4d6b-91a3-d228f042b941/getting-started/readingList/myList">
+
+
+    <details>
+      <summary>Access:</summary>
+      <p>You can control what can be done to the Resources.</p>
+      <p>There is <a target="_blank" rel="noopener noreferrer"
+          href="https://www.w3.org/wiki/WebAccessControl#Modes_of_Access">a complicated description</a> if
+        you want to know the technical details.</p>
+    </details>
+    <p title="Read">
+      <input type="checkbox" id="access-mode-read" name="access-mode-read" checked></input>
+      <label for="access-mode-read">Read the contents (including querying it, etc)</label>
+    </p>
+    <p title="Write">
+      <input type="checkbox" id="access-mode-write" name="access-mode-write"></input>
+      <label for="access-mode-write">Overwrite the contents (including deleting it, or modifying part of it).</label>
+    </p>
+    <p title="Append">
+      <input type="checkbox" id="access-mode-append" name="access-mode-append"></input>
+      <label for="access-mode-append">Add information to [the end of] it but not remove information.</label>
+    </p>
+
+    <details>
+      <summary>Inherit:</summary>
+      <p>The Access Grant can give permission for Resources below this one in the hierarchy. This is incredibly powerful
+        because it allows you to give access to a lot of Resources with a single Access Grant.</p>
+    </details>
+    <p title="Inherit">
+      <input type="checkbox" id="inherit" name="inherit" checked></input>
+      <label for="inherit">Also give the same access to child Resources</label>
+    </p>
+
+
+    <details>
+      <summary>Purpose:</summary>
+      <p>Describe what the Access Grant can be used for. This is a legal issue, it is not enforced by technical means.
+      </p>
+      <p>You are free to use any IRI but you might be interested in the <a target="_blank" rel="noopener noreferrer"
+          href="https://w3c.github.io/dpv/dpv/#vocab-purpose">Data Privacy Vocabulary</a> as it has many interesting
+        purposes defined.</p>
+    </details>
+    <p title="Purposes">
+      <input type="text" id="purpose" name="purpose" size="80"
+        value="https://w3id.org/dpv#ResearchAndDevelopment"></input>
+    </p>
+    <label id="purpose-description"></label>
+
+
+    <details>
+      <summary>Expiry:</summary>
+      <p>You can choose when the Access Grant should expire. It cannot be used for access after this date. That is
+        enforced by technical means.</p>
+      <p>If you do not set an expiry then the Access Grant will be valid forever. You can <a target="_blank"
+          rel="noopener noreferrer" href="https://amc.inrupt.com/">revoke</a> it at any time. It is the responsibility
+        of the security system to check the revocation status of your Access Grant.</p>
+    </details>
+    <p title="Expiry">
+      <input type="date" id="expiration-date" name="expiration-date"> <input type="time" id="expiration-time"
+        name="expiration-time" value="00:00" /> <a target="_blank" rel="noopener noreferrer"
+        href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">UTC</a>
+    </p>
+
+
+    <details>
+      <summary>Issue:</summary>
+      <p>When you issue the Access Grant it will be available for the other person to use. They will need to work out
+        how to find it and use it. They will probably be using an app to do that for them.</p>
+      <h3>Request</h3>
+      <textarea name="requestBody" id="requestBody" rows="10" cols="100" disabled="disabled"
+        style="white-space: pre-wrap;"></textarea>
+      <h3>Response</h3>
+      <textarea name="accessGrantBody" id="accessGrantBody" rows="10" cols="100" disabled="disabled"
+        style="white-space: pre-wrap;"></textarea>
+
+    </details>
+    <aside>You can have very many Access Grants but you cannot delete them.
+      You can revoke them, or they might expire, but they will exist forever so be cautious about how many you create
+      and what you put in them.</aside>
+    <div>
+      <button name="btnIssue" id="btnIssue">Issue Access Grant</button>
+    </div>
+
+    <div>
+    </div>
+  </section>
+
+
+
+  <section id="access-grant-details">
+    <h2>My Existing Access Grants</h2>
+    <p>Here are the details of the active Access Grants that you already have. When a new one is issued it will be shown
+      here.
+    </p>
+    <label for="accessgrants" id="accessgrants-loading-status"></label>
+    <table class="sortable-theme-bootstrap" data-sortable>
+      <thead>
+        <tr>
+          <th class="priority-5">id</th>
+          <th class='priority-4'>Issued</th>
+          <th class='priority-4'>Expiry</th>
+          <th class='priority-5'>Issuer</th>
+          <th>To</th>
+          <th>For</th>
+          <th>Read</th>
+          <th>Write</th>
+          <th>Append</th>
+          <th class='priority-3'>Inherit</th>
+          <th class='priority-3'>Purposes</th>
+        </tr>
+      </thead>
+      <tbody id="accessgrants" name="accessgrants">
+
+      </tbody>
+    </table>
+  </section>
+  <p><a target="_blank" rel="noopener noreferrer" href="licence.html">Licences</a></p>
+</body>
+
+</html>
