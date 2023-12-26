@@ -2,6 +2,12 @@
 
 This simplistic application allows you to issue an Access Grant for your Solid Resources.
 
+You can find it online at [myforest.com/issue-access-grant](https://myforest.com/issue-access-grant/).
+
+It looks something like this:
+
+![Screenshot of the application](docs/Screenshot_2023-12-25.png "Screenshot")
+
 # Run locally
 
 ## Loosen security
