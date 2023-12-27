@@ -56,8 +56,8 @@
       <p>Grant access to the agent with this WebID. It might represent a person or a bot.</p>
     </details>
     <p>
-      <input type="text" data-access-request-state id="input-requestor-webid"
-        style="width: 95%" value="https://id.inrupt.com/davidbowen">
+      <input type="text" data-access-request-state id="input-requestor-webid" style="width: 95%"
+        value="https://id.inrupt.com/davidbowen">
       <br>
       <label data-summary-for="input-requestor-webid">&nbsp;</label>
     </p>
@@ -69,10 +69,12 @@
       <p>You can use a Resource or a Container.</p>
     </details>
     <p>
-      <input type="text" data-access-request-state data-is-array id="input-resource" name="input-resource" style="width: 95%"
+      <input type="text" data-access-request-state data-is-array id="input-resource" name="input-resource"
+        style="width: 95%"
         value="https://storage.inrupt.com/459bac9d-ecc7-4d6b-91a3-d228f042b941/getting-started/readingList/myList">
-        <label data-summary-for="input-resource" data-summary-uses-simple-resource-label>&nbsp;</label>
-      </p>
+      <br>
+      <label data-summary-for="input-resource" data-summary-uses-simple-resource-label>&nbsp;</label>
+    </p>
 
     <details>
       <summary>Access:</summary>
@@ -87,7 +89,8 @@
     </p>
     <p title="Write">
       <input type="checkbox" data-access-request-state id="input-access-mode-write"></input>
-      <label for="input-access-mode-write">Overwrite the contents (including deleting it, or modifying part of it).</label>
+      <label for="input-access-mode-write">Overwrite the contents (including deleting it, or modifying part of
+        it).</label>
     </p>
     <p title="Append">
       <input type="checkbox" data-access-request-state id="input-access-mode-append"></input>
@@ -114,11 +117,11 @@
         purposes defined.</p>
     </details>
     <p title="Purposes">
-      <input type="text" data-access-request-state data-is-array id="input-purpose"
- style="width: 95%" value="https://w3id.org/dpv#ResearchAndDevelopment"></input>
-    
-    <label data-summary-for="input-purpose">&nbsp;</label>
-  </p>
+      <input type="text" data-access-request-state data-is-array id="input-purpose" style="width: 95%"
+        value="https://w3id.org/dpv#ResearchAndDevelopment"></input>
+      <br>
+      <label data-summary-for="input-purpose">&nbsp;</label>
+    </p>
 
     <details>
       <summary>Expiry:</summary>
@@ -131,8 +134,7 @@
     <p title="Expiry">
       <input type="date" data-access-request-state id="input-expiration-date">
       <input type="time" data-access-request-state id="input-expiration-time" value="00:00" />
-      <a
-        target="_blank" rel="noopener noreferrer"
+      <a target="_blank" rel="noopener noreferrer"
         href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">UTC</a>
     </p>
 
