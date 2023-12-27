@@ -30,10 +30,10 @@ async function cellContentForURL(url, missingLabelFunction = (url) => url) {
   return result;
 }
 
-async function cellContentForArray(array, missingLabelFunction= (url) => url) {
+async function cellContentForArray(array, missingLabelFunction= (url) => url, valueIfNothingSpecified) {
 
   if (array == null || array.length == 0) {
-    return "<span title='Nothing specified'>" + missingLabelFunction + "</span>";
+    return "<span title='Nothing specified'>" + valueIfNothingSpecified + "</span>";
   }
   var result = "";
   var comma = "";
@@ -43,7 +43,7 @@ async function cellContentForArray(array, missingLabelFunction= (url) => url) {
   }
   actuallyAnArray = actuallyAnArray.filter(item => item.length > 0)
   if (actuallyAnArray.length == 0) {
-    return "<span title='Nothing specified'>" + missingLabelFunction + "</span>";
+    return "<span title='Nothing specified'>" + valueIfNothingSpecified + "</span>";
   }
 
   for (const item of actuallyAnArray) {
@@ -91,6 +91,11 @@ async function handleRedirectAfterLogin() {
   }
 }
 
+function cleanArray(csv){
+  const cleaned = csv.split(",").map(x=>x.trim());
+  const nonEmpty=cleaned.filter(x=>x.length>0);
+  return [...new Set(nonEmpty)]
+}
 
 /**
  * Gather the input state so we can preview it and return it in the case we actually want to issue the Access Grant
@@ -106,8 +111,8 @@ async function getRequestOverrideAndUpdatePreview() {
     status: "https://w3id.org/GConsent#ConsentStatusExplicitlyGiven",
     requestor: document.querySelector("#input-requestor-webid").value,
     access,
-    purpose: [...new Set(document.querySelector("#input-purpose").value.split(","))],
-    resources: [...new Set(document.querySelector("#input-resource").value.split(","))],
+    purpose: cleanArray(document.querySelector("#input-purpose").value),
+    resources: cleanArray(document.querySelector("#input-resource").value),
     inherit: document.querySelector("#input-inherit").checked
   }
 
@@ -130,7 +135,7 @@ async function getRequestOverrideAndUpdatePreview() {
 
 async function issueGrant() {
   const accessGrantBody = document.querySelector("#access-grant-body");
-
+  
   try {
     const requestOverride = await getRequestOverrideAndUpdatePreview();
     const grant = await approveAccessRequest(undefined, requestOverride)
@@ -195,7 +200,7 @@ async function updateSummary(node, summaryNode) {
   if (node.dataset.isArray == null) {
     summaryNode.innerHTML = await cellContentForURL(value,missingLabelFunction)
   } else {
-    summaryNode.innerHTML = await cellContentForArray([...new Set(value.split(","))],missingLabelFunction)
+    summaryNode.innerHTML = await cellContentForArray(cleanArray(value),missingLabelFunction)
   }
 
 }
@@ -226,7 +231,7 @@ async function accessGrantAsTableRow(accessGrants, i) {
   var comma = "";
   for (const resourceURI of providedConsent.forPersonalData) {
     row += comma;
-    row += await cellContentForURL(resourceURI, simpleResourceLabel);
+    row += await cellContentForArray(resourceURI, simpleResourceLabel,"No Resources");
     comma = ", ";
   }
   row += "</td>";
@@ -254,7 +259,7 @@ async function accessGrantAsTableRow(accessGrants, i) {
 
   row += "<td class='priority-3'>";
 
-  row += await cellContentForArray(providedConsent.forPurpose, "Anything");
+  row += await cellContentForArray(providedConsent.forPurpose,url=>url,"Any purpose");
   row += "</td>";
 
 
