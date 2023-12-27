@@ -29,7 +29,7 @@
         <summary><label id="labelIdP" for="input-idp">Identity Provider:</label></summary>
         Ideally you should know how you prefer to login to Solid. If not then simply leave this default.
       </details>
-      <input type="text" id="input-idp" size="80" value="https://login.inrupt.com"></input>
+      <input type="text" id="input-idp" style="width: 95%" value="https://login.inrupt.com"></input>
       <button name="btnLogin" id="btnLogin">Login</button>
     </div>
     <div>
@@ -55,10 +55,12 @@
       </summary>
       <p>Grant access to the agent with this WebID. It might represent a person or a bot.</p>
     </details>
-    <input type="text" id="input-requestor-webid" name="input-requestor-webid" size="100"
-      value="https://id.inrupt.com/davidbowen">
+    <p>
+      <input type="text" data-access-request-state id="input-requestor-webid"
+        style="width: 95%" value="https://id.inrupt.com/davidbowen">
       <br>
-    <label id="to-description"></label>
+      <label data-summary-for="input-requestor-webid">&nbsp;</label>
+    </p>
 
 
     <details>
@@ -66,9 +68,11 @@
       <p>This is the Resource URI you are giving access to.</p>
       <p>You can use a Resource or a Container.</p>
     </details>
-    <input type="text" id="input-resource" name="input-resource" size="100"
-      value="https://storage.inrupt.com/459bac9d-ecc7-4d6b-91a3-d228f042b941/getting-started/readingList/myList">
-
+    <p>
+      <input type="text" data-access-request-state data-is-array id="input-resource" name="input-resource" style="width: 95%"
+        value="https://storage.inrupt.com/459bac9d-ecc7-4d6b-91a3-d228f042b941/getting-started/readingList/myList">
+        <label data-summary-for="input-resource" data-summary-uses-simple-resource-label>&nbsp;</label>
+      </p>
 
     <details>
       <summary>Access:</summary>
@@ -78,16 +82,16 @@
         you want to know the technical details.</p>
     </details>
     <p title="Read">
-      <input type="checkbox" id="access-mode-read" name="access-mode-read" checked></input>
-      <label for="access-mode-read">Read the contents (including querying it, etc)</label>
+      <input type="checkbox" data-access-request-state id="input-access-mode-read" checked></input>
+      <label for="input-access-mode-read">Read the contents (including querying it, etc)</label>
     </p>
     <p title="Write">
-      <input type="checkbox" id="access-mode-write" name="access-mode-write"></input>
-      <label for="access-mode-write">Overwrite the contents (including deleting it, or modifying part of it).</label>
+      <input type="checkbox" data-access-request-state id="input-access-mode-write"></input>
+      <label for="input-access-mode-write">Overwrite the contents (including deleting it, or modifying part of it).</label>
     </p>
     <p title="Append">
-      <input type="checkbox" id="access-mode-append" name="access-mode-append"></input>
-      <label for="access-mode-append">Add information to [the end of] it but not remove information.</label>
+      <input type="checkbox" data-access-request-state id="input-access-mode-append"></input>
+      <label for="input-access-mode-append">Add information to [the end of] it but not remove information.</label>
     </p>
 
     <details>
@@ -96,8 +100,8 @@
         because it allows you to give access to a lot of Resources with a single Access Grant.</p>
     </details>
     <p title="Inherit">
-      <input type="checkbox" id="inherit" name="inherit" checked></input>
-      <label for="inherit">Also give the same access to child Resources</label>
+      <input type="checkbox" data-access-request-state id="input-inherit" checked></input>
+      <label for="input-inherit">Also give the same access to child Resources</label>
     </p>
 
 
@@ -110,11 +114,11 @@
         purposes defined.</p>
     </details>
     <p title="Purposes">
-      <input type="text" id="purpose" name="purpose" size="80"
-        value="https://w3id.org/dpv#ResearchAndDevelopment"></input>
-    </p>
-    <label id="purpose-description"></label>
-
+      <input type="text" data-access-request-state data-is-array id="input-purpose"
+ style="width: 95%" value="https://w3id.org/dpv#ResearchAndDevelopment"></input>
+    
+    <label data-summary-for="input-purpose">&nbsp;</label>
+  </p>
 
     <details>
       <summary>Expiry:</summary>
@@ -125,8 +129,10 @@
         of the security system to check the revocation status of your Access Grant.</p>
     </details>
     <p title="Expiry">
-      <input type="date" id="expiration-date" name="expiration-date"> <input type="time" id="expiration-time"
-        name="expiration-time" value="00:00" /> <a target="_blank" rel="noopener noreferrer"
+      <input type="date" data-access-request-state id="input-expiration-date">
+      <input type="time" data-access-request-state id="input-expiration-time" value="00:00" />
+      <a
+        target="_blank" rel="noopener noreferrer"
         href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">UTC</a>
     </p>
 
@@ -136,11 +142,9 @@
       <p>When you issue the Access Grant it will be available for the other person to use. They will need to work out
         how to find it and use it. They will probably be using an app to do that for them.</p>
       <h3>Request</h3>
-      <textarea name="requestBody" id="requestBody" rows="10" cols="100" disabled="disabled"
-        style="white-space: pre-wrap;"></textarea>
+      <pre id="request-body" style="width: 100%" />
       <h3>Response</h3>
-      <textarea name="accessGrantBody" id="accessGrantBody" rows="10" cols="100" disabled="disabled"
-        style="white-space: pre-wrap;"></textarea>
+      <pre id="access-grant-body" style="width: 100%" />
 
     </details>
     <aside>You can have very many Access Grants but you cannot delete them.
@@ -187,7 +191,7 @@
     <a target="_blank" rel="noopener noreferrer" href="licence.html">Licences</a>
     <a target="_blank" rel="noopener noreferrer" href="https://github.com/MyForest/issue-access-grant/">Development</a>
   </p>
-  
+
 </body>
 
 </html>
