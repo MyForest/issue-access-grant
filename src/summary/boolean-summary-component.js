@@ -1,4 +1,9 @@
 export class BooleanSummaryComponent extends HTMLElement {
+  constructor(...args) {
+    super(...args);
+    this.internals = this.attachInternals();
+  }
+
   connectedCallback() {
     this.render();
   }
