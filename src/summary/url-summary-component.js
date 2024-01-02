@@ -28,7 +28,12 @@ export class UrlSummaryComponent extends HTMLElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    this.render();
+    if(oldValue!=newValue){
+      if(name=="data-value"){
+        this.render();
+      }      
+    }
+    
   }
 }
 

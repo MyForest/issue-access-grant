@@ -160,8 +160,8 @@ async function accessGrantAsTableRow(accessGrants, i) {
   return row;
 }
 
-document.querySelector("#btnLogin").onclick = function () { loginToIdP(); };
-document.querySelector("#btnIssue").onclick = function () { issueGrant(); };
+document.getElementById("login-to-idp").onsubmit = function () { loginToIdP(); return false; };
+document.getElementById("issue-access-grant").onsubmit = function () { issueGrant(); return false;};
 
 // Update the Access Grant preview when the user changes the input state
 for (const item of document.querySelectorAll('[data-access-request-state]')) {
