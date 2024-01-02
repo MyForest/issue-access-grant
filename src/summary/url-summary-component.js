@@ -2,6 +2,7 @@ import { updateSummary } from "./summary"
 export class UrlSummaryComponent extends HTMLElement {
   constructor(...args) {
     super(...args);
+    this.internals = this.attachInternals();
     this.isArray = false;
     this.missingLabelFunction = (url) => url;
     this.valueIfNothingSpecified = "";
