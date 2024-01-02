@@ -20,7 +20,6 @@
     <p>An Access Grant gives people permission to read, write or append to a single Resource or a lot of them.</p>
     <p>Once you have logged in you will be able to issue an Access Grant.</p>
   </section>
-
   <section id="login">
     <h2>Login</h2>
     <p>Login so this tool can act on your behalf.</p>
@@ -35,8 +34,8 @@
     <div>
       <details>
         <summary>
-          <label id="readlabel" for="myWebID">Your WebID:</label>
-          <label id="myWebID" name="myWebID">Login to see your WebID</label>
+          <label id="readlabel" for="session-webid">Your WebID:</label>
+          <url-summary-component  id="session-webid">Login to see your WebID</url-summary-component>
         </summary>
         Your <a target="_blank" rel="noopener noreferrer" href="https://www.w3.org/wiki/WebID">WebID</a> is used in
         Solid to identify who you are. You can have
@@ -59,7 +58,7 @@
       <input type="text" data-access-request-state id="input-requestor-webid" style="width: 95%"
         value="https://id.inrupt.com/davidbowen">
       <br>
-      <label data-summary-for="input-requestor-webid">&nbsp;</label>
+      <url-summary-component data-summary-component-for="input-requestor-webid">&nbsp;</url-summary-component>
     </p>
 
 
@@ -73,7 +72,7 @@
         style="width: 95%"
         value="https://storage.inrupt.com/459bac9d-ecc7-4d6b-91a3-d228f042b941/getting-started/readingList/myList">
       <br>
-      <label data-summary-for="input-resource" data-summary-uses-simple-resource-label>&nbsp;</label>
+      <resource-summary-component data-summary-component-for="input-resource" data-summary-uses-simple-resource-label>&nbsp;</resource-summary-component>
     </p>
 
     <details>
@@ -120,7 +119,7 @@
       <input type="text" data-access-request-state data-is-array id="input-purpose" style="width: 95%"
         value="https://w3id.org/dpv#ResearchAndDevelopment"></input>
       <br>
-      <label data-summary-for="input-purpose">&nbsp;</label>
+      <purpose-summary-component data-summary-component-for="input-purpose">&nbsp;</purpose-summary-component>
     </p>
 
     <details>

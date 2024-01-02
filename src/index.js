@@ -2,67 +2,15 @@ import { login, handleIncomingRedirect, getDefaultSession } from "@inrupt/solid-
 
 import { getAccessGrantAll, approveAccessRequest } from "@inrupt/solid-client-access-grants";
 
-import { getLabel } from "./labels"
-import { getImageURL } from "./images"
+import { cleanArray } from "./clean-array"
+
+import "./summary/boolean-summary-component.js";
+import "./summary/purpose-summary-component.js";
+import "./summary/resource-summary-component.js";
+import "./summary/url-summary-component.js";
 
 import "./responsive.css";
 import "./sortable-theme-bootstrap.css";
-
-
-async function cellContentForURL(url, missingLabelFunction = (url) => url) {
-  const label = getLabel(url) ?? missingLabelFunction(url);
-  var result = "";
-  if (label == url) {
-    result += "<span>";
-  } else {
-    result += "<span title='" + url + "'>";
-  }
-
-  const imageURL = await getImageURL(url);
-  if (imageURL) {
-    result += "<img style='vertical-align:middle; height: 1.3em;' src='" + imageURL + "' /> ";
-  }
-
-  result += "<a  target='_blank' rel='noopener noreferrer' href='" + url + "'>";
-  result += label;
-  result += "</a>";
-  result += "</span>";
-  return result;
-}
-
-async function cellContentForArray(array, missingLabelFunction= (url) => url, valueIfNothingSpecified) {
-
-  if (array == null || array.length == 0) {
-    return "<span title='Nothing specified'>" + valueIfNothingSpecified + "</span>";
-  }
-  var result = "";
-  var comma = "";
-  var actuallyAnArray = array;
-  if (!Array.isArray(array)) {
-    actuallyAnArray = Array(array);
-  }
-  actuallyAnArray = actuallyAnArray.filter(item => item.length > 0)
-  if (actuallyAnArray.length == 0) {
-    return "<span title='Nothing specified'>" + valueIfNothingSpecified + "</span>";
-  }
-
-  for (const item of actuallyAnArray) {
-    if (item.length) {
-      result += comma;
-      result += await cellContentForURL(item,missingLabelFunction);
-      comma = ", ";
-    }
-  }
-  return result;
-}
-
-
-function simpleResourceLabel(resourceURI) {
-  if (resourceURI.endsWith("/")) {
-    return resourceURI.split("/").at(-2) + "/";
-  }
-  return resourceURI.split("/").at(-1);
-}
 
 function loginToIdP() {
   const loginOptions = {
@@ -70,31 +18,25 @@ function loginToIdP() {
     redirectUrl: new URL(".", window.location.href).toString(),
     clientId: "https://myforest.com/issue-access-grant/client-identifier.json"
   }
-  console.info(JSON.stringify(loginOptions, null, 2))
   return login(loginOptions);
 }
 
 // 1b. Login Redirect. Call handleIncomingRedirect() function.
 // When redirected after login, finish the process by retrieving session information.
 async function handleRedirectAfterLogin() {
-  // Use session restore: https://docs.inrupt.com/developer-tools/javascript/client-libraries/tutorial/restore-session-browser-refresh/
-  await handleIncomingRedirect({ restorePreviousSession: true }); // no-op if not part of login redirect
 
-  const session = getDefaultSession();
-  if (session.info.isLoggedIn) {
-    // Update the page with the status.
-    document.getElementById("myWebID").innerHTML = await cellContentForURL(session.info.webId);
-    // buttonIssue.removeAttribute("disabled");
-    listAccessGrants();
-  } else {
-    console.log("Not logged in")
+  var session = getDefaultSession();
+  if (!session.info.isLoggedIn) {
+    // This causes page flicker
+    // Use session restore: https://docs.inrupt.com/developer-tools/javascript/client-libraries/tutorial/restore-session-browser-refresh/
+    await handleIncomingRedirect({ restorePreviousSession: true }); // no-op if not part of login redirect
   }
-}
 
-function cleanArray(csv){
-  const cleaned = csv.split(",").map(x=>x.trim());
-  const nonEmpty=cleaned.filter(x=>x.length>0);
-  return [...new Set(nonEmpty)]
+  session = getDefaultSession();
+  if (session.info.isLoggedIn) {
+    document.getElementById("session-webid").dataset.value = session.info.webId;
+    listAccessGrants();
+  }
 }
 
 /**
@@ -128,14 +70,14 @@ async function getRequestOverrideAndUpdatePreview() {
     requestOverride.expirationDate = new Date(dateExpression);
   }
 
-    // Show pretty-printed preview
+  // Show pretty-printed preview
   document.querySelector("#request-body").innerText = JSON.stringify(requestOverride, null, 2);
   return requestOverride;
 }
 
 async function issueGrant() {
   const accessGrantBody = document.querySelector("#access-grant-body");
-  
+
   try {
     const requestOverride = await getRequestOverrideAndUpdatePreview();
     const grant = await approveAccessRequest(undefined, requestOverride)
@@ -146,8 +88,6 @@ async function issueGrant() {
     accessGrantBody.innerText = "Error: " + error;
   }
 }
-
-
 
 async function listAccessGrants() {
   const defaultTitle = "Issue Access Grant";
@@ -179,31 +119,6 @@ async function listAccessGrants() {
 
 }
 
-/**
- * Create a user-friendly summary of the field and present it to the user in the summary node
- * @param {Node} node 
- * @param {Node} summaryNode 
- * @returns 
- */
-async function updateSummary(node, summaryNode) {
-  const value = node.value;
-  if (value == null) {
-    summaryNode.innerHTML = "&nbsp;";
-    return;
-  }
-
-  var missingLabelFunction=undefined;
-  if(summaryNode.dataset.summaryUsesSimpleResourceLabel!=null){
-    missingLabelFunction=simpleResourceLabel
-  }
-
-  if (node.dataset.isArray == null) {
-    summaryNode.innerHTML = await cellContentForURL(value,missingLabelFunction)
-  } else {
-    summaryNode.innerHTML = await cellContentForArray(cleanArray(value),missingLabelFunction)
-  }
-
-}
 
 async function accessGrantAsTableRow(accessGrants, i) {
   const vc = accessGrants[i];
@@ -220,54 +135,26 @@ async function accessGrantAsTableRow(accessGrants, i) {
   }
 
   row += "<td class='priority-5'>";
-  row += await cellContentForURL(vc.issuer);
-  row += "</td>";
+  row += "<url-summary-component data-value='" + (vc.issuer ?? "") + "'</summary-component></td>";
 
   const providedConsent = vc.credentialSubject.providedConsent;
-
-  row += "<td>" + await cellContentForURL(providedConsent.isProvidedTo) + "</td>";
-
-  row += "<td>";
-  var comma = "";
-  for (const resourceURI of providedConsent.forPersonalData) {
-    row += comma;
-    row += await cellContentForArray(resourceURI, simpleResourceLabel,"No Resources");
-    comma = ", ";
-  }
-  row += "</td>";
+  row += "<td><url-summary-component data-value='" + (providedConsent.isProvidedTo ?? "") + "'></webid-component></td>";
+  row += "<td><resource-summary-component data-value='" + (providedConsent.forPersonalData ?? "") + "'></resource-summary-component></td>";
 
   for (const mode of ["Read", "Write", "Append"]) {
     const checked = providedConsent.mode.includes(mode);
-    row += "<td ";
-    row += "data-value='" + checked + "' ";
-    row += "title='" + mode + "'";
-    row += ">";
-    row += "<input disabled type='checkbox' ";
-
-    if (checked) {
-      row += "checked";
-    }
-    row += "/></td>";
+    row += "<td><boolean-summary-component data-value='" + checked + "'></boolean-summary-component></td>";
   }
-
-  row += "<td class='priority-3' title='Inherit'>";
-  row += "<input class='disabled' disabled type='checkbox' ";
-  if (providedConsent.inherit) {
-    row += "checked";
-  }
-  row += "/></td>";
 
   row += "<td class='priority-3'>";
+  row += "<boolean-summary-component data-value='" + (providedConsent.inherit ?? false) + "'></boolean-summary-component></td>";
 
-  row += await cellContentForArray(providedConsent.forPurpose,url=>url,"Any purpose");
-  row += "</td>";
-
+  row += "<td class='priority-3'>";
+  row += "<purpose-summary-component data-value='" + (providedConsent.forPurpose ?? "") + "'></purpose-summary-component></td>";
 
   row += "</tr>";
   return row;
 }
-
-
 
 document.querySelector("#btnLogin").onclick = function () { loginToIdP(); };
 document.querySelector("#btnIssue").onclick = function () { issueGrant(); };
@@ -277,16 +164,24 @@ for (const item of document.querySelectorAll('[data-access-request-state]')) {
   item.addEventListener("input", getRequestOverrideAndUpdatePreview);
 }
 
-// Update the field summary when the user changes the underlying data
-for (const summaryNode of document.querySelectorAll('[data-summary-for]')) {
-  const item = document.getElementById(summaryNode.dataset.summaryFor)
+for (const summaryNode of document.querySelectorAll('[data-summary-component-for]')) {
+  const item = document.getElementById(summaryNode.dataset.summaryComponentFor)
   if (item == null) {
     console.warn("Unable to find item element with id " + summaryNode.dataset.summaryFor)
     continue;
   }
-  item.addEventListener("input", async () => { await updateSummary(item, summaryNode); });
-  await updateSummary(item, summaryNode);
+  item.addEventListener("input", async () => { summaryNode.dataset.value = item.value });
+  summaryNode.dataset.value = item.value;
 }
+
+// Update the list of Access Grants when the resource changes because we filter by that
+let timeout = null;
+document.querySelector("#input-resource").addEventListener("input", async () => {
+  clearTimeout(timeout);
+  timeout = setTimeout(async function () {
+    await listAccessGrants();
+  }, 500);
+});
 
 getRequestOverrideAndUpdatePreview();
 
