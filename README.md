@@ -18,9 +18,10 @@ Here we are allowing redirects to localhost:
 ```JSON
   "redirect_uris": [
     "https://myforest.com/issue-access-grant/",
-    "http://localhost:80"
+    "http://localhost:8080/"
   ],
 ```
+Note that the OpenID server is likely to cache this document, so if you alter it then you'll need to wait for the cache to expire before it'll work.
 
 ## Install
 
