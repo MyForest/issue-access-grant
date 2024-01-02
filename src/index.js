@@ -143,11 +143,15 @@ async function accessGrantAsTableRow(accessGrants, i) {
 
   for (const mode of ["Read", "Write", "Append"]) {
     const checked = providedConsent.mode.includes(mode);
-    row += "<td><boolean-summary-component data-value='" + checked + "'></boolean-summary-component></td>";
+    // td data-value is for sorting
+    row += "<td data-value='" + checked + "'>";
+    row += "<boolean-summary-component data-value='" + checked + "'></boolean-summary-component></td>";
   }
 
-  row += "<td class='priority-3'>";
-  row += "<boolean-summary-component data-value='" + (providedConsent.inherit ?? false) + "'></boolean-summary-component></td>";
+  const inherit = providedConsent.inherit ?? false;
+  // td data-value is for sorting
+  row += "<td class='priority-3' data-value='" + inherit + "'>";
+  row += "<boolean-summary-component data-value='" + inherit + "'></boolean-summary-component></td>";
 
   row += "<td class='priority-3'>";
   row += "<purpose-summary-component data-value='" + (providedConsent.forPurpose ?? "") + "'></purpose-summary-component></td>";
