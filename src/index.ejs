@@ -29,14 +29,16 @@
           <summary><label id="labelIdP" for="input-idp">Identity Provider:</label></summary>
           Ideally you should know how you prefer to login to Solid. If not then simply leave this default.
         </details>
-        <input type="text" id="input-idp" style="width: 95%" value="https://login.inrupt.com">
+        <input type="URL" required id="input-idp" style="width: 95%" value="https://login.inrupt.com">
         <input type="submit" value="Login">
       </div>
       <div>
         <details>
           <summary>
             <label id="readlabel" for="session-webid">Your WebID:</label>
-            <url-summary-component id="session-webid">Login to see your WebID</url-summary-component>
+            <output for="input-idp" name="output-for-login">
+              <url-summary-component id="session-webid">Login to see your WebID</url-summary-component>
+            </output>
           </summary>
           Your <a target="_blank" rel="noopener noreferrer" href="https://www.w3.org/wiki/WebID">WebID</a> is used in
           Solid to identify who you are. You can have
@@ -58,7 +60,7 @@
         <p>Grant access to the agent with this WebID. It might represent a person or a bot.</p>
       </details>
       <p>
-        <input type="text" data-access-request-state id="input-requestor-webid" style="width: 95%"
+        <input type="URL" required data-access-request-state id="input-requestor-webid" style="width: 95%"
           value="https://id.inrupt.com/davidbowen">
         <br>
         <url-summary-component data-summary-component-for="input-requestor-webid">&nbsp;</url-summary-component>
@@ -71,8 +73,8 @@
         <p>You can use a Resource or a Container.</p>
       </details>
       <p>
-        <input type="text" data-access-request-state data-is-array id="input-resource" name="input-resource"
-          style="width: 95%"
+        <input type="URL" multiple required data-access-request-state data-is-array id="input-resource"
+          name="input-resource" style="width: 95%"
           value="https://storage.inrupt.com/459bac9d-ecc7-4d6b-91a3-d228f042b941/getting-started/readingList/myList">
         <br>
         <resource-summary-component data-summary-component-for="input-resource"
@@ -111,7 +113,6 @@
         <label for="input-inherit">Also give the same access to child Resources</label>
       </p>
 
-
       <details>
         <summary>Purpose:</summary>
         <p>Describe what the Access Grant can be used for. This is a legal issue, it is not enforced by technical means.
@@ -121,7 +122,7 @@
           purposes defined.</p>
       </details>
       <p title="Purposes">
-        <input type="text" data-access-request-state data-is-array id="input-purpose" style="width: 95%"
+        <input type="URL" multiple data-access-request-state data-is-array id="input-purpose" style="width: 95%"
           value="https://w3id.org/dpv#ResearchAndDevelopment">
         <br>
         <purpose-summary-component data-summary-component-for="input-purpose">&nbsp;</purpose-summary-component>
