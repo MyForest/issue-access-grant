@@ -1,6 +1,6 @@
 import { login, handleIncomingRedirect, getDefaultSession } from "@inrupt/solid-client-authn-browser";
 
-import { getAccessGrantAll } from "@inrupt/solid-client-access-grants";
+import { getAccessGrantAll, approveAccessRequest } from "@inrupt/solid-client-access-grants";
 
 import { cleanArray } from "./clean-array"
 
