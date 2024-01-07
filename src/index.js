@@ -1,6 +1,6 @@
 import { login, handleIncomingRedirect, getDefaultSession } from "@inrupt/solid-client-authn-browser";
 
-import { getAccessGrantAll, approveAccessRequest } from "@inrupt/solid-client-access-grants";
+import { getAccessGrantAll } from "@inrupt/solid-client-access-grants";
 
 import { cleanArray } from "./clean-array"
 
@@ -12,9 +12,12 @@ import "./summary/url-summary-component.js";
 import "./responsive.css";
 import "./sortable-theme-bootstrap.css";
 
-function loginToIdP() {
+document.getElementById("login-to-idp").onsubmit = loginToIdp;
+
+function loginToIdp(e) {
+  e.preventDefault();
   const loginOptions = {
-    oidcIssuer: document.querySelector("#input-idp").value,
+    oidcIssuer: new FormData(e.target).get("idp"),
     redirectUrl: new URL(".", window.location.href).toString(),
     clientId: "https://myforest.com/issue-access-grant/client-identifier.json"
   }
@@ -35,6 +38,7 @@ async function handleRedirectAfterLogin() {
   session = getDefaultSession();
   if (session.info.isLoggedIn) {
     document.getElementById("session-webid").dataset.value = session.info.webId;
+    document.getElementById("details-login").open = false;
     listAccessGrants();
   }
 }
@@ -44,22 +48,23 @@ async function handleRedirectAfterLogin() {
  * @returns An object that can be used to issue an Access Grant
  */
 async function getRequestOverrideAndUpdatePreview() {
+  const formData = new FormData(document.getElementById("issue-access-grant"))
   const access = {};
   for (const mode of ["read", "write", "append"]) {
-    access[mode] = document.querySelector("#input-access-mode-" + mode).checked
+    access[mode] = formData.get("access-mode-" + mode) == "on";
   }
 
   const requestOverride = {
     status: "https://w3id.org/GConsent#ConsentStatusExplicitlyGiven",
-    requestor: document.querySelector("#input-requestor-webid").value,
+    requestor: formData.get("requestor-webid"),
     access,
-    purpose: cleanArray(document.querySelector("#input-purpose").value),
-    resources: cleanArray(document.querySelector("#input-resource").value),
-    inherit: document.querySelector("#input-inherit").checked
+    purpose: cleanArray(formData.get("purpose")),
+    resources: cleanArray(formData.get("resource")),
+    inherit: formData.get("inherit") == "on"
   }
 
-  const expirationDateValue = document.querySelector("#input-expiration-date").value
-  const expirationTimeValue = document.querySelector("#input-expiration-time").value
+  const expirationDateValue = formData.get("expiration-date")
+  const expirationTimeValue = formData.get("expiration-time")
   if (expirationDateValue.length > 0) {
     var dateExpression = expirationDateValue + "T";
     if (expirationTimeValue.length > 0) {
@@ -75,7 +80,9 @@ async function getRequestOverrideAndUpdatePreview() {
   return requestOverride;
 }
 
-async function issueGrant() {
+async function issueGrant(e) {
+  e.preventDefault();
+
   const accessGrantBody = document.querySelector("#access-grant-body");
 
   try {
@@ -94,7 +101,7 @@ async function listAccessGrants() {
   const loading = document.querySelector("#accessgrants-loading-status");
 
   try {
-    loading.innerText = "(loading...)";
+    loading.innerText = "Loading...";
     const params = { includeExpired: true, resource: document.querySelector("#input-resource").value }
     const accessGrants = await getAccessGrantAll(params);
 
@@ -160,8 +167,7 @@ async function accessGrantAsTableRow(accessGrants, i) {
   return row;
 }
 
-document.getElementById("login-to-idp").onsubmit = function () { loginToIdP(); return false; };
-document.getElementById("issue-access-grant").onsubmit = function () { issueGrant(); return false;};
+document.getElementById("issue-access-grant").onsubmit = issueGrant;
 
 // Update the Access Grant preview when the user changes the input state
 for (const item of document.querySelectorAll('[data-access-request-state]')) {

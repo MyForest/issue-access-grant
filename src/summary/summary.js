@@ -21,23 +21,32 @@ export async function updateSummary(value, isArray, missingLabelFunction, valueI
 }
 
 async function cellContentForURL(url, missingLabelFunction = (url) => url) {
-  const label = getLabel(url) ?? missingLabelFunction(url);
   var result = "";
-  if (label == url) {
-    result += "<span>";
-  } else {
-    result += "<span title='" + url + "'>";
-  }
 
   const imageURL = await getImageURL(url);
   if (imageURL) {
     result += "<img style='vertical-align:middle; height: 1.3em;' src='" + imageURL + "' /> ";
   }
 
-  result += "<a  target='_blank' rel='noopener noreferrer' href='" + url + "'>";
-  result += label;
-  result += "</a>";
-  result += "</span>";
+  const labels = getLabel(url) ?? [[url, missingLabelFunction(url)]];
+  var space="";
+  // [ [url,label]  ]
+  for (const parts of labels) {
+    result+=space;
+    const url = parts[0];
+    const label = parts[1];
+    if (label == url) {
+      result += "<span>";
+    } else {
+      result += "<span title='" + url + "'>";
+    }
+
+    result += "<a  target='_blank' rel='noopener noreferrer' href='" + url + "'>";
+    result += label;
+    result += "</a>";
+    result += "</span>";
+    space=" ";
+  }
   return result;
 }
 

@@ -5,6 +5,11 @@
   <meta charset="utf-8">
   <title>Issue Access Grant</title>
   <link rel="icon" href="logo.png" type="image/x-png">
+
+  <!-- Custom built-in elements on Safari -->
+  <!-- https://github.com/WICG/webcomponents/issues/509 -->
+  <script src="//unpkg.com/@ungap/custom-elements/es.js"></script>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sortable/0.8.0/js/sortable.min.js"
     integrity="sha512-DEcSaL0BWApJ//v7ZfqAI04nvK+NQcUVwrrx/l1x7OJgU0Cwbq7e459NBMzLPrm8eLPzAwBtiJJS4AvLZDZ8xA=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -20,33 +25,45 @@
     <p>An Access Grant gives people permission to read, write or append to a single Resource or a lot of them.</p>
     <p>Once you have logged in you will be able to issue an Access Grant.</p>
   </section>
-  <form id="login-to-idp">
-    <section id="login">
-      <h2>Login</h2>
-      <p>Login so this tool can act on your behalf.</p>
-      <div>
-        <details>
-          <summary><label id="labelIdP" for="input-idp">Identity Provider:</label></summary>
-          Ideally you should know how you prefer to login to Solid. If not then simply leave this default.
-        </details>
-        <input type="URL" required id="input-idp" style="width: 95%" value="https://login.inrupt.com">
-        <input type="submit" value="Login">
-      </div>
-      <div>
-        <details>
-          <summary>
-            <label id="readlabel" for="session-webid">Your WebID:</label>
+  <details id="details-login" open="true">
+    <form id="login-to-idp">
+      <section id="login">
+
+        <p>Login so this tool can act on your behalf.</p>
+        <div>
+          <details>
+            <summary><label id="labelIdP" for="input-idp">Identity Provider:</label></summary>
+            Ideally you should know how you prefer to login to Solid. If not then simply leave this default.
+          </details>
+          <input type="URL" required id="input-idp" name="idp" value="https://login.inrupt.com"
+            style="width: 95%; display:inline-block;" />
+          <br>
+          <url-summary-component data-summary-component-for="input-idp">&nbsp;</url-summary-component>
+          <input type="submit" value="Login">
+        </div>
+      </section>
+    </form>
+    <summary>
+      <h2 style="display:inline">Login</h2>
+    </summary>
+  </details>
+
+  <section id="webid">
+    <div>
+      <details>
+        Your <a target="_blank" rel="noopener noreferrer" href="https://www.w3.org/wiki/WebID">WebID</a> is used in
+        Solid to identify who you are. You can have
+        many WebIDs for different purposes so you will want to be sure this is showing the WebID that you mean to use.
+        <summary>
+          <h2 style="display:inline">
             <output for="input-idp" name="output-for-login">
               <url-summary-component id="session-webid">Login to see your WebID</url-summary-component>
             </output>
-          </summary>
-          Your <a target="_blank" rel="noopener noreferrer" href="https://www.w3.org/wiki/WebID">WebID</a> is used in
-          Solid to identify who you are. You can have
-          many WebIDs for different purposes so you will want to be sure this is showing the WebID that you mean to use.
-        </details>
-      </div>
-    </section>
-  </form>
+          </h2>
+        </summary>
+      </details>
+    </div>
+  </section>
 
   <form id="issue-access-grant">
     <section id="access-grant-details">
@@ -60,8 +77,8 @@
         <p>Grant access to the agent with this WebID. It might represent a person or a bot.</p>
       </details>
       <p>
-        <input type="URL" required data-access-request-state id="input-requestor-webid" style="width: 95%"
-          value="https://id.inrupt.com/davidbowen">
+        <input type="URL" required data-access-request-state id="input-requestor-webid" name="requestor-webid"
+          style="width: 95%" value="https://id.inrupt.com/davidbowen">
         <br>
         <url-summary-component data-summary-component-for="input-requestor-webid">&nbsp;</url-summary-component>
       </p>
@@ -73,8 +90,8 @@
         <p>You can use a Resource or a Container.</p>
       </details>
       <p>
-        <input type="URL" multiple required data-access-request-state data-is-array id="input-resource"
-          name="input-resource" style="width: 95%"
+        <input type="URL" multiple required data-access-request-state data-is-array id="input-resource" name="resource"
+          style="width: 95%"
           value="https://storage.inrupt.com/459bac9d-ecc7-4d6b-91a3-d228f042b941/getting-started/readingList/myList">
         <br>
         <resource-summary-component data-summary-component-for="input-resource"
@@ -89,16 +106,16 @@
           you want to know the technical details.</p>
       </details>
       <p title="Read">
-        <input type="checkbox" data-access-request-state id="input-access-mode-read" checked>
+        <input type="checkbox" data-access-request-state id="input-access-mode-read" name="access-mode-read" checked>
         <label for="input-access-mode-read">Read the contents (including querying it, etc)</label>
       </p>
       <p title="Write">
-        <input type="checkbox" data-access-request-state id="input-access-mode-write">
+        <input type="checkbox" data-access-request-state id="input-access-mode-write" name="access-mode-write">
         <label for="input-access-mode-write">Overwrite the contents (including deleting it, or modifying part of
           it).</label>
       </p>
       <p title="Append">
-        <input type="checkbox" data-access-request-state id="input-access-mode-append">
+        <input type="checkbox" data-access-request-state id="input-access-mode-append" name="access-mode-append">
         <label for="input-access-mode-append">Add information to [the end of] it but not remove information.</label>
       </p>
 
@@ -109,7 +126,7 @@
           because it allows you to give access to a lot of Resources with a single Access Grant.</p>
       </details>
       <p title="Inherit">
-        <input type="checkbox" data-access-request-state id="input-inherit" checked>
+        <input type="checkbox" data-access-request-state id="input-inherit" name="inherit" checked>
         <label for="input-inherit">Also give the same access to child Resources</label>
       </p>
 
@@ -122,8 +139,8 @@
           purposes defined.</p>
       </details>
       <p title="Purposes">
-        <input type="URL" multiple data-access-request-state data-is-array id="input-purpose" style="width: 95%"
-          value="https://w3id.org/dpv#ResearchAndDevelopment">
+        <input type="URL" multiple data-access-request-state data-is-array id="input-purpose" name="purpose"
+          style="width: 95%" value="https://w3id.org/dpv#ResearchAndDevelopment">
         <br>
         <purpose-summary-component data-summary-component-for="input-purpose">&nbsp;</purpose-summary-component>
       </p>
@@ -137,8 +154,8 @@
           of the security system to check the revocation status of your Access Grant.</p>
       </details>
       <p title="Expiry">
-        <input type="date" data-access-request-state id="input-expiration-date">
-        <input type="time" data-access-request-state id="input-expiration-time" value="00:00">
+        <input type="date" data-access-request-state id="input-expiration-date" name="expiration-date">
+        <input type="time" data-access-request-state id="input-expiration-time" name="expiration-time" value="00:00">
         <a target="_blank" rel="noopener noreferrer"
           href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">UTC</a>
       </p>
